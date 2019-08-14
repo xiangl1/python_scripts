@@ -34,10 +34,18 @@ def main():
 		for acc_num in in_file:
 			acc_num = acc_num.rstrip('\n')
 			pre_dir = acc_num[:6] 
-			print("{}/{}/{}/{}_1.fastq.gz".format(pre_fix,pre_dir,acc_num,acc_num),
-				  file=out_file)
-			print("{}/{}/{}/{}_2.fastq.gz".format(pre_fix,pre_dir,acc_num,acc_num),
-				  file=out_file)
+			
+			if len(acc_num) == 9:
+				print("{}/{}/{}/{}_1.fastq.gz".format(pre_fix,pre_dir,
+					  acc_num,acc_num),file=out_file)
+				print("{}/{}/{}/{}_2.fastq.gz".format(pre_fix,pre_dir,
+					  acc_num,acc_num),file=out_file)
+			
+			if len(acc_num) == 10:	
+				print("{}/{}/00{}/{}/{}_1.fastq.gz".format(pre_fix,pre_dir,
+					  acc_num[-1],acc_num,acc_num),file=out_file)
+				print("{}/{}/00{}/{}/{}_2.fastq.gz".format(pre_fix,pre_dir,
+					  acc_num[-1],acc_num,acc_num),file=out_file)
 
 # --------------------------------------------------
 if __name__ == '__main__':
