@@ -22,53 +22,49 @@ def get_args():
 	return parser.parse_args()
 
 # --------------------------------------------------
-ncbi = NCBITaxa()
-
-def get_desired_ranks(taxid,desired_ranks):
-	"""get ranks by taxid"""
-	lineage = ncbi.get_lineage(taxid)
-	lineage2ranks = ncbi.get_rank(lineage)
-	ranks2lineage = dict((rank, taxid) for (taxid, rank) in lineage2ranks.items())
-	return {'{}'.format(rank):ranks2lineage.get(rank,'NA') for rank in desired_ranks}
-
-# --------------------------------------------------
 def main():
 	"""main"""
+	ncbi = NCBITaxa()
 	args = get_args()
 	infile = args.infile
 	#header = args.header
 	#level = args.classify_order
 	out_file = args.outfile
 	
-	desired_ranks = [
-					"superkingdom",
-					"phylum",
-					"class",
-					"order",
-					"family",
-					"genus",
-					"species"]
-
 	l = []
-	
 	with open(infile,'r') as in_f:
 		reader = csv.reader(in_f,delimiter = '\t')
-		next(reader)
 		for row in reader:
-			t = (row[0],row[2])
+			if row[1] != 'NA':
+				taxid2name = ncbi.get_taxid_translator([row[1]])
+				name = taxid2name[int(row[1])]
+			else:
+				name = 'NA'
+			t = (name, row[5])
 			l.append(t)
 	
-	with open(out_file, 'w') as out_f:	
-		print('contig', *desired_ranks,sep='\t', file=out_f)
-		for (contig,tax) in l:
-			try:
-				d = get_desired_ranks(tax, desired_ranks)
-			except ValueError:
-				pass
-			new_l = []
-			for rank in desired_ranks:
-				new_l.append(d[rank])
-			print(contig, *new_l, sep='\t', file=out_f)
+	d_count = {}			
+	for key, value in l:
+		d_count[key] = int(d_count.get(key, 0)) + int(value)
+	
+	total_count = sum(d_count.values())
+
+	with open(out_file, 'w') as o_f:
+		for key in d_count.keys():
+			percent = float(d_count[key]/total_count * 100)
+			print(key,'\t',d_count[key],'\t','{0:.2f}'.format(percent), file=o_f)	
+	
+	#with open(out_file, 'w') as out_f:	
+	#	print('contig', *desired_ranks,sep='\t', file=out_f)
+	#	for (contig,tax) in l:
+	#		try:
+	#			d = get_desired_ranks(tax, desired_ranks)
+	#		except ValueError:
+	#			pass
+	#		new_l = []
+	#		for rank in desired_ranks:
+	#			new_l.append(d[rank])
+	#		print(contig, *new_l, sep='\t', file=out_f)
 # --------------------------------------------------
 if __name__ == '__main__':
 	main()
