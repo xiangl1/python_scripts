@@ -33,14 +33,14 @@ def main():
 	temp_count = 'temp_count_'+outfile
 
 	os.chdir(in_dir)
-	os.system('module load samtools')
+	#os.system('module load samtools')
 	os.system('samtools view -bS '+infile+'> '+temp_bam)
 	os.system('samtools sort '+temp_bam+' -o '+temp_sort_bam)
 	os.system('samtools index '+temp_sort_bam)
 	os.system('samtools idxstats '+temp_sort_bam+'> '+temp_count)
 	
 	os.system('awk -F"\t" \'$3 > 0\' '+temp_count+' > '+output)
-	os.system('rm -rf temp*')
+	#os.system('rm -rf temp*')
 
 # --------------------------------------------------
 if __name__ == '__main__':
