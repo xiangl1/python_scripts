@@ -6,15 +6,18 @@ import os
 import sys
 import csv
 import re
+from collections import defaultdict
 
 # --------------------------------------------------
 def get_args():
 	"""get args"""
 	parser = argparse.ArgumentParser(description='format centrifuge output')
-	parser.add_argument('-i', '--infile', help='centrifuge result file',
+	parser.add_argument('-l', '--file_list', help='list of filename',
 						type=str, metavar='FILE', required=True)
-	parser.add_argument('-t', '--total_name', help='total names of each sample',
-						type=str, metavar='STR', required=True)
+	parser.add_argument('-d', '--input_dir', help='dir of input file',
+						type=str, metavar='PATH', required=True)
+	parser.add_argument('-t', '--total_name', help='total names of bac',
+						type=str, metavar='FILE', required=True)
 	parser.add_argument('-o', '--outfile', help='Output file',
 						type=str, metavar='FILE', required=True)
 	return parser.parse_args()
@@ -23,32 +26,41 @@ def get_args():
 def main():
 	"""main"""
 	args = get_args()
-	infile = args.infile
+	file_list = args.file_list
+	path = args.input_dir
 	row_name = args.total_name
-	out_file = args.outfile
+	out_file = open(args.outfile,'w')
 	
-	h = {}
+	
+	t_d = {}
+	out_d = defaultdict(list)
+	header = ['kingdom','phylum','class','order','family','genus','species']
 	with open(row_name, 'r') as in_h:
 		reader = csv.reader(in_h, delimiter = '\t')
-		next(reader)
 		for row in reader:
-			h[row[0]] = 0
-
-	filename = os.path.basename(infile)
-	column_name = re.search('([0-9].*[0-9])',filename)
-
-	with open(infile,'r') as in_f:
-		reader = csv.reader(in_f,delimiter = '\t')
-		for row in reader:
-			if row[0] in h:
-				h[row[0]] = int(row[1])	
+			t_d[row[0]] = '0'
 	
-	with open(out_file, 'w') as o_f:
-		#print ('name','\t',column_name.group(0), file=o_f)
-		print (column_name.group(0), file=o_f)
-		for key in sorted(h):
-			#print(key,'\t',h[key], file=o_f)	
-			print(h[key], file=o_f)	
+	with open(file_list) as fl:
+		filenames = fl.read().splitlines()
+
+	for i in filenames:
+		header.append(i)
+		in_d = {}
+		in_file = path+'/'+i
+		with open(in_file,'r') as in_f:
+			reader = csv.reader(in_f,delimiter = '\t')
+			next(reader)
+			for row in reader:
+				in_d[row[0]] = row[1]
+		for key in sorted(t_d):
+			if key in in_d:
+				out_d[key].append(in_d[key])	
+			else:
+				out_d[key].append(t_d[key])
+
+	print('{}'.format(','.join(header)),file=out_file)
+	for tax in sorted(out_d):
+		print('{},{}'.format(tax,','.join(out_d[tax])),file=out_file)	
 
 # --------------------------------------------------
 if __name__ == '__main__':
