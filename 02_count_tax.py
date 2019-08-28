@@ -49,7 +49,7 @@ def main():
 	
 	print('{}'.format(column_name),file=out_file)
 	for key in in_d:
-		print('{},{}'.format(key,sum(in_d[key])),file=out_file)
+		print('{}\t{}'.format(key,sum(in_d[key])),file=out_file)
 # --------------------------------------------------
 if __name__ == '__main__':
 	main()
