@@ -29,8 +29,8 @@ def main():
 	in_dir = os.path.dirname(os.path.abspath(infile))
 	output = out_dir+'/'+outfile
 	temp_bam = 'temp_'+outfile+'.bam'	
-	temp_sort_bam = 'temp_sorted_'+outfile+'.bam'
-	temp_count = 'temp_count_'+outfile
+	temp_sort_bam = 'temp_'+outfile+'_sorted.bam'
+	temp_count = 'temp_'+outfile
 
 	os.chdir(in_dir)
 	#os.system('module load samtools')
@@ -40,7 +40,7 @@ def main():
 	os.system('samtools idxstats '+temp_sort_bam+'> '+temp_count)
 	
 	os.system('awk -F"\t" \'$3 > 0\' '+temp_count+' > '+output)
-	#os.system('rm -rf temp*')
+	os.system('rm -rf temp_'+outfile+'*')
 
 # --------------------------------------------------
 if __name__ == '__main__':
