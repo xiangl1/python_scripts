@@ -55,7 +55,7 @@ def main():
 				efetch_url = base + 'efetch.fcgi?db={}&id={}&rettype={}&retmode=text'.format(database,id_list,rettype)
 				efetch_url_content = requests.get(efetch_url).text
 				print('{}'.format(efetch_url_content),file=out_f)
-		close()
+	
 	# retrieve by ncbi search term
 	else:
 		query = infile
