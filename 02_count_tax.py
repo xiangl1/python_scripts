@@ -32,12 +32,12 @@ def main():
 	in_d = defaultdict(list)
 	with open(tax_file, 'r') as ref_h:
 		reader = csv.reader(ref_h, delimiter = '\t')
-		next(reader)
+		#next(reader)
 		for line in reader:
-			h[line[0]] = ','.join(line[1:8])
+			h[line[0]] = ','.join(line[1:9])
 	
-	column_name = ','.join(['kingdom','phylum','class','order','family','genus',
-					'species', 'count'])
+	#column_name = ','.join(['kingdom','phylum','class','order','family','genus',
+					#'species', 'count'])
 
 	with open(in_file,'r') as in_f:
 		reader = csv.reader(in_f,delimiter = '\t')
@@ -47,7 +47,7 @@ def main():
 			except KeyError:
 				continue
 	
-	print('{}'.format(column_name),file=out_file)
+	#print('{}'.format(column_name),file=out_file)
 	for key in in_d:
 		print('{}\t{}'.format(key,sum(in_d[key])),file=out_file)
 # --------------------------------------------------
