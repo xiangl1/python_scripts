@@ -27,7 +27,7 @@ def get_desired_ranks(taxid,desired_ranks):
 	lineage = ncbi.get_lineage(taxid)
 	lineage2ranks = ncbi.get_rank(lineage)
 	ranks2lineage = dict((rank,taxid) for (taxid, rank) in lineage2ranks.items())
-	return {'{}'.format(rank):ranks2lineage.get(rank,'NA') for rank in desired_ranks}
+	return {'{}'.format(rank):ranks2lineage.get(rank,1) for rank in desired_ranks}
 
 # --------------------------------------------------
 def main():
