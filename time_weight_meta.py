@@ -34,6 +34,8 @@ def calculate_new_value(variable_weight_list):
 	y_d = 0
 	y_n = 0
 	for weight, value in variable_weight_list:
+		if value == '':
+			continue
 		y_d += int(weight)*float(value)
 		y_n += int(weight)
 	return(round(y_d/y_n,3))
