@@ -28,12 +28,14 @@ def main():
 	out_file = open(args.outfile,'w')
 	
 	h = defaultdict(list)
-	
+	l = defaultdict(list)
+
 	with open(header,'r') as in_h:
 		reader = csv.reader(in_h,delimiter = '\t')
 		next(reader)
 		for line in reader:
 			if len(line) >= 10:
+				l[line[1]].append(line[8])
 				h[line[1]].append(line[9])
 	#for key in h:
 	#	print('{}\t{}'.format(key,h[key]))
@@ -43,9 +45,9 @@ def main():
 		next(reader)
 		for line in reader:	
 			if line[2] in h:
-				print('{},{},{},{}'.format(line[0],line[1],line[2],max(h[line[2]]),key=len),file=out_file)
+				print('{},{},{},{},{}'.format(line[0],line[1],line[2],min(l[line[2]],key=len),max(h[line[2]]),key=len),file=out_file)
 			else:
-				print('{},{},{},{}'.format(line[0],line[1],line[2],'NA'),file=out_file)
+				print('{},{},{},{},{}'.format(line[0],line[1],line[2],'NA','NA'),file=out_file)
 # --------------------------------------------------
 if __name__ == '__main__':
 	main()
