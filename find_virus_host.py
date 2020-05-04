@@ -45,7 +45,7 @@ def main():
 		next(reader)
 		for line in reader:	
 			if line[2] in h:
-				print('{},{},{},{},{}'.format(line[0],line[1],line[2],min(l[line[2]],key=len),max(h[line[2]]),key=len),file=out_file)
+				print('{},{},{},{},{}'.format(line[0],line[1],line[2],max(h[line[2]],key=len),min(l[line[2]],key=len)),file=out_file)
 			else:
 				print('{},{},{},{},{}'.format(line[0],line[1],line[2],'NA','NA'),file=out_file)
 # --------------------------------------------------
